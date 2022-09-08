@@ -1,2 +1,15 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿using System;
+
+namespace EmployeeManagement
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Welcome to EmployeePayroll");
+            EmployeeRepo employeeRepository = new EmployeeRepo();
+            employeeRepository.GetAllEmployees();
+            
+        }
+    }
+}
