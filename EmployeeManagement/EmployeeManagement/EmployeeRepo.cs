@@ -1,55 +1,50 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeManagement
 {
-    public class EmployeeRepo
+    class EmployeeRepo
     {
         public static string connectionString = @"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=EmployeePayrollService;Integrated Security=True";
         SqlConnection connection = new SqlConnection(connectionString);
 
-
-        /// <summary>
-        /// UC2
-        /// </summary>
         public void GetAllEmployees()
         {
-            EmployeeModel model = new EmployeeModel();
-            SqlConnection connection = new SqlConnection(connectionString);
+
             try
             {
-                using (connection)
+                EmployeeModel model = new EmployeeModel();
+                using (this.connection)
                 {
-                    string query = @"select * from dbo.employee_payrollN";
-                    SqlCommand command = new SqlCommand(query, connection);
-                    connection.Open();
+                    string query = @"select EmployeeID,EmployeeName,PhoneNumber,Address,Department
+                                    ,Gender,BasicPay,Deductions,TaxablePay,TaxPay,NetPay,StartDate,City,Country FROM employee_payroll";
+                    //define the SqlCommand object
+                    SqlCommand command = new SqlCommand(query, this.connection);
+                    this.connection.Open();
                     SqlDataReader sqlDataReader = command.ExecuteReader();
+                    //check if there are record
                     if (sqlDataReader.HasRows)
                     {
                         while (sqlDataReader.Read())
                         {
-                            model.EmployeeID = sqlDataReader.GetInt32(0); //ToInt32(sqlDataReader["EmployeeID"]);
-                            model.EmployeeName = sqlDataReader.GetString(1);//Convert.ToString(sqlDataReader["EmployeeName"]
+                            model.EmployeeID = sqlDataReader.GetInt32(0); 
+                            model.EmployeeName = sqlDataReader.GetString(1);
                             model.PhoneNumber = sqlDataReader.GetString(2);
                             model.Address = sqlDataReader.GetString(3);
                             model.Department = sqlDataReader.GetString(4);
                             model.Gender = sqlDataReader.GetString(5);
-                            model.BasicPay = Convert.ToDouble(sqlDataReader.GetString(6));
-                            model.Deductions = Convert.ToDouble(sqlDataReader.GetString(7));
-                            model.TaxablePay = Convert.ToDouble(sqlDataReader.GetString(8));
-                            model.NetPay = Convert.ToDouble(sqlDataReader.GetString(10)); ;
+                            model.BasicPay = Convert.ToDouble(sqlDataReader.GetDouble(6));
+                            model.Deductions = Convert.ToDouble(sqlDataReader.GetDouble(7));
+                            model.TaxablePay = Convert.ToDouble(sqlDataReader.GetDouble(8));
+                            model.NetPay = Convert.ToDouble(sqlDataReader.GetDouble(10)); ;
                             model.StartDate = sqlDataReader.GetDateTime(11);
                             model.City = sqlDataReader.GetString(12);
                             model.Country = sqlDataReader.GetString(13);
-                            Console.WriteLine("EmpId:{0}\nEmpName:{1}\nPhoneNumber:{2}\nAddress:{3}\nDepartment:{4}\nGender-:{5}\nBasicPay:{6}" +
-                                "\nDeductions:{7}\nTaxablePay:{8}\nTax:{9}\nNetPay:{10},\nStartDate:{11}\nCity:{12}\nCountry:{13}",
-                                 model.EmployeeID, model.EmployeeName, model.PhoneNumber, model.Address, model.Department, model.Gender,
-                                 model.BasicPay, model.Deductions, model.TaxablePay, model.NetPay,
-                                 model.StartDate.ToString(), model.City, model.Country);
+                            //display retrieved record
+                            Console.WriteLine("EmployeeId:{0}\nEmployeeName:{1}\nPhoneNumber:{2}\nAddress:{3}\nDepartment:{4}",
+                                 model.EmployeeID, model.EmployeeName, model.PhoneNumber, model.Address, model.Department);
+                                 
                             Console.WriteLine("\n");
                         }
                     }
@@ -57,17 +52,66 @@ namespace EmployeeManagement
                     {
                         Console.WriteLine("No data found");
                     }
+                    //close data reader
                     sqlDataReader.Close();
+                    this.connection.Close();
                 }
             }
             catch (Exception e)
             {
-                throw new Exception(e.Message);
+                Console.WriteLine(e.Message);
             }
             finally
             {
-               this. connection.Close();
+                this.connection.Close();
+            }
+        }
+        // <summary>
+        /// Adds the employee.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <returns></returns>
+        /// @EmployeeName,@PhoneNumber,@Address,@Department,@Gender,@BasicPay,
+        /// @Deductions,@TaxablePay,@Tax,@NetPay,@StartDate,@City,@Country
+        /// Adds the employee.
+        public bool AddEmployee(EmployeeModel model)
+        {
+            try
+            {
+                SqlConnection connection = new SqlConnection(connectionString);
+                using (connection)
+                {
+                    SqlCommand command = new SqlCommand("dbo.spEmployee_Payroll_AddData", connection);
+                    command.CommandType = CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EmployeeName", model.EmployeeName);
+                    command.Parameters.AddWithValue("@PhoneNumber", model.PhoneNumber);
+                    command.Parameters.AddWithValue("@Address", model.Address);
+                    command.Parameters.AddWithValue("@Department", model.Department);
+                    command.Parameters.AddWithValue("@Gender", model.Gender);
+                    command.Parameters.AddWithValue("@BasicPay", model.BasicPay);
+                    command.Parameters.AddWithValue("@Deductions", model.Deductions);
+                    command.Parameters.AddWithValue("@TaxablePay", model.TaxablePay);
+                    command.Parameters.AddWithValue("@TaxPay", model.TaxPay);
+                    command.Parameters.AddWithValue("@NetPay", model.NetPay);
+                    command.Parameters.AddWithValue("@StartDate", DateTime.Now);
+                    command.Parameters.AddWithValue("@City", model.City);
+                    command.Parameters.AddWithValue("@Country", model.Country);
+                    connection.Open();
+                    var result = command.ExecuteNonQuery();
+                    connection.Close();
+                    if (result != 0)
+                    {
+                        return true;
+                    }
+                    return false;
+                }
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.Message);
             }
         }
     }
-}
+}   
+
+      
