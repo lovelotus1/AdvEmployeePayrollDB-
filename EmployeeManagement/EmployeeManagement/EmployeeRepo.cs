@@ -138,6 +138,97 @@ namespace EmployeeManagement
                 Console.WriteLine(e.Message);
             }
         }
+        public void RetreiveData()
+        {
+            try
+            {
+                EmployeeModel employeeModel = new EmployeeModel();
+                using (connection)
+                {
+                    //string query = "select * from employee_payroll where gender='M'";
+                    string query = "select * from employee_payroll where gender='F'";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            employeeModel.EmployeeName = reader.GetString(1);
+                            employeeModel.Gender = reader.GetString(5);
+                            Console.WriteLine("Employe Name: " + employeeModel.EmployeeName +  "\nGender: " + employeeModel.Gender);
+                            Console.WriteLine("\n");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("No Data Found");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+        public void getSum()
+        {
+
+            try
+            {
+                EmployeeModel employeeModel = new EmployeeModel();
+                using (this.connection)
+                {
+                    string querySUM = "select SUM(BasicPay) from employee_payroll";
+                    string queryAVG = "select AVG(BasicPay) from employee_payroll";
+                    string queryCOUNT = "select COUNT(BasicPay) from employee_payroll";
+                    string queryMIN = "select MIN(BasicPay) from employee_payroll";
+                    string queryMAX = "Select MAX(BasicPay) from employee_payroll ";
+
+                    SqlCommand command = new SqlCommand(querySUM, this.connection);
+                    this.connection.Open();
+                    SqlDataReader reader = command.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            //double Sum = reader.GetDouble(0);
+                            
+                            
+                            
+                            
+                            //Console.WriteLine("Sum of Salary " + Sum);
+                            double Avg = reader.GetDouble(1);
+                            Console.WriteLine("Sum of Avg " + Avg);
+                            double Count = reader.GetDouble(2);
+                            Console.WriteLine("Sum of Salary " + Count);
+                            double Min = reader.GetDouble(3);
+                            Console.WriteLine("Sum of Salary " + Min);
+                            double Max = reader.GetDouble(4);
+                            Console.WriteLine("Sum of Salary " + Max);
+
+                        }
+
+                    }
+                    else
+                    {
+                        System.Console.WriteLine("No data found");
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+
+            }
+            finally
+            {
+                this.connection.Close();
+            }
+        }
     }
 }
+    
+
         

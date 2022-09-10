@@ -23,7 +23,10 @@ namespace EmployeeManagement
             //employee.City = "Ranchi";
             //employee.Country = "India";
             //repo.AddEmployee(employee);
-            repo.UpdateSalary();
+            //repo.UpdateSalary();
+            //repo.RetreiveData();
+            repo.getSum();
+
             Console.ReadKey();
            
         }
