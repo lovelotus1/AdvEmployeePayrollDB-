@@ -28,7 +28,7 @@ namespace EmployeeManagement
                     {
                         while (sqlDataReader.Read())
                         {
-                            model.EmployeeID = sqlDataReader.GetInt32(0); 
+                            model.EmployeeID = sqlDataReader.GetInt32(0);
                             model.EmployeeName = sqlDataReader.GetString(1);
                             model.PhoneNumber = sqlDataReader.GetString(2);
                             model.Address = sqlDataReader.GetString(3);
@@ -44,7 +44,7 @@ namespace EmployeeManagement
                             //display retrieved record
                             Console.WriteLine("EmployeeId:{0}\nEmployeeName:{1}\nPhoneNumber:{2}\nAddress:{3}\nDepartment:{4}",
                                  model.EmployeeID, model.EmployeeName, model.PhoneNumber, model.Address, model.Department);
-                                 
+
                             Console.WriteLine("\n");
                         }
                     }
@@ -111,7 +111,33 @@ namespace EmployeeManagement
                 throw new Exception(exception.Message);
             }
         }
-    }
-}   
+        public void UpdateSalary()
+        {
+            try
+            {
 
-      
+                using (connection)
+                {
+                    //UpdateSalary 
+                    string query = "Update employee_payroll Set BasicPay='3000000.00' Where EmployeeName='Raj';";
+                    SqlCommand command = new SqlCommand(query, connection);
+                    connection.Open();
+                    var result = command.ExecuteNonQuery();
+                    if (result != 0)
+                    {
+                        Console.WriteLine("Salary Updated");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Salary not Updated");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+    }
+}
+        
