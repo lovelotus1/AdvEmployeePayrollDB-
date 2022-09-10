@@ -115,7 +115,6 @@ namespace EmployeeManagement
         {
             try
             {
-
                 using (connection)
                 {
                     //UpdateSalary 
@@ -193,20 +192,7 @@ namespace EmployeeManagement
                         while (reader.Read())
                         {
                             //double Sum = reader.GetDouble(0);
-                            
-                            
-                            
-                            
-                            //Console.WriteLine("Sum of Salary " + Sum);
-                            double Avg = reader.GetDouble(1);
-                            Console.WriteLine("Sum of Avg " + Avg);
-                            double Count = reader.GetDouble(2);
-                            Console.WriteLine("Sum of Salary " + Count);
-                            double Min = reader.GetDouble(3);
-                            Console.WriteLine("Sum of Salary " + Min);
-                            double Max = reader.GetDouble(4);
-                            Console.WriteLine("Sum of Salary " + Max);
-
+                            //Console.WriteLine("Sum of Salary " + Sum); 
                         }
 
                     }
